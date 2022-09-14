@@ -207,7 +207,7 @@ inline static int isqrt(int x)
     int i, j;
     
     // According to heatmap API, boost is heat radius multiplier
-    int radius = 50 * boost;
+    int radius = 100 * boost;
     
     // RGBA array is initialized with 0s
     unsigned char* rgba = (unsigned char*)calloc(width*height*4, sizeof(unsigned char));
