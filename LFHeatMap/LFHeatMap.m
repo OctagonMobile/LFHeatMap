@@ -145,6 +145,7 @@ inline static int isqrt(int x)
                          boost:(float)boost
                      locations:(NSArray *)locations
                        weights:(NSArray *)weights
+                     colorList:(NSArray *)colors
 {
     if (!mapView || !locations)
         return nil;
@@ -157,20 +158,22 @@ inline static int isqrt(int x)
         [points addObject:[NSValue valueWithCGPoint:point]];
     }
     
-    return [LFHeatMap heatMapWithRect:mapView.frame boost:boost points:points weights:weights];
+    return [LFHeatMap heatMapWithRect:mapView.frame boost:boost points:points weights:weights colorList: colors];
 }
 
 + (UIImage *)heatMapWithRect:(CGRect)rect
                        boost:(float)boost
                       points:(NSArray *)points
                      weights:(NSArray *)weights
+                   colorList:(NSArray *)colors
 {
     return [LFHeatMap heatMapWithRect:rect
                                 boost:boost
                                points:points
                               weights:weights
              weightsAdjustmentEnabled:NO
-                      groupingEnabled:YES];
+                      groupingEnabled:YES
+                            colorList: colors];
 }
 
 + (UIImage *)heatMapWithRect:(CGRect)rect
@@ -179,6 +182,7 @@ inline static int isqrt(int x)
                      weights:(NSArray *)weights
     weightsAdjustmentEnabled:(BOOL)weightsAdjustmentEnabled
              groupingEnabled:(BOOL)groupingEnabled
+                   colorList:(NSArray *)colors
 {
 	
     // Adjustment variables for weights adjustment
@@ -408,20 +412,108 @@ inline static int isqrt(int x)
                 // Normalize density to 0..1
                 floatDensity = (float)density[i] / (float)maxDensity;
                 
-                // Red and alpha component
-                rgba[indexOrigin] = floatDensity * 255;
-                rgba[indexOrigin+3] = rgba[indexOrigin];
-                
-                 // Green component
-                if (floatDensity >= 0.75)
-                    rgba[indexOrigin+1] = rgba[indexOrigin];
-                else if (floatDensity >= 0.5)
-                    rgba[indexOrigin+1] = (floatDensity - 0.5) * 255 * 3;
-               
-                
-                // Blue component
-                if (floatDensity >= 0.8)
-                    rgba[indexOrigin+2] = (floatDensity - 0.8) * 255 * 5;
+                if (colors.count > 0) {
+                    
+                    if (colors.count == 1) {
+                        UIColor * color = colors.firstObject;
+                        
+                        CGFloat red, green, blue, alpha;
+                        [color getRed: &red
+                                green: &green
+                                 blue: &blue
+                                alpha: &alpha];
+
+                        rgba[indexOrigin+3] = floatDensity * 255;
+
+                        // Red component
+                        rgba[indexOrigin] = red * floatDensity * 255;
+
+                        // Green component
+                        rgba[indexOrigin+1] = green * floatDensity * 255;
+
+                        // Blue component
+                        rgba[indexOrigin+2] = blue * floatDensity * 255;
+                    } else {
+                        
+                        float eachRange = 1.0 / colors.count;
+                        long counter = (colors.count - 1);
+                        while (counter >= 0) {
+                            if (floatDensity >= counter * eachRange) {
+                                
+                                UIColor * color = colors[counter];
+                                
+                                CGFloat red, green, blue, alpha;
+                                [color getRed: &red
+                                        green: &green
+                                         blue: &blue
+                                        alpha: &alpha];
+
+                                rgba[indexOrigin+3] = floatDensity * 255;
+
+                                // Red and alpha component
+                                rgba[indexOrigin] = floatDensity * 255;
+                                rgba[indexOrigin+3] = rgba[indexOrigin];
+
+                                 // Green component
+                                if (floatDensity >= 0.75)
+                                    rgba[indexOrigin+1] = rgba[indexOrigin];
+                                else if (floatDensity >= 0.5)
+                                    rgba[indexOrigin+1] = (floatDensity - 0.5) * 255 * 3;
+
+                                // Blue component
+                                if (floatDensity >= 0.8)
+                                    rgba[indexOrigin+2] = (floatDensity - 0.8) * 255 * 5;
+
+//                                float upper = (counter + 1) * eachRange;
+//                                float lower = counter * eachRange;
+
+//                                // Red component
+//                                float redRange = (0.5 * (upper - lower)) + lower;
+//                                if (floatDensity >= redRange)
+//                                    rgba[indexOrigin] = floatDensity * red * 255;
+//                                else
+//                                    rgba[indexOrigin] = (floatDensity * red + redRange) * 255;
+//
+//
+//                                // Green component
+//                                float greenRange = (0.5 * (upper - lower)) + lower;
+//                                if (floatDensity >= greenRange)
+//                                    rgba[indexOrigin+1] = floatDensity * green * 255;
+//                                else
+//                                    rgba[indexOrigin+1] = (floatDensity * green + greenRange) * 255 * 3;
+//
+//
+//                                // Blue component
+//                                float blueRange = (0.5 * (upper - lower)) + lower;
+//                                if (floatDensity >= blueRange)
+//                                    rgba[indexOrigin+2] = floatDensity * blue * 255;
+//                                else
+//                                    rgba[indexOrigin+2] = (floatDensity * blue + blueRange) * 255 * 5;
+
+
+                                break;
+                            }
+                            counter -= 1;
+                        }
+                    }
+
+                } else {
+
+                    // Red and alpha component
+                    rgba[indexOrigin] = floatDensity * 255;
+                    rgba[indexOrigin+3] = rgba[indexOrigin];
+
+                     // Green component
+                    if (floatDensity >= 0.75)
+                        rgba[indexOrigin+1] = rgba[indexOrigin];
+                    else if (floatDensity >= 0.5)
+                        rgba[indexOrigin+1] = (floatDensity - 0.5) * 255 * 3;
+
+
+                    // Blue component
+                    if (floatDensity >= 0.8)
+                        rgba[indexOrigin+2] = (floatDensity - 0.8) * 255 * 5;
+                }
             }
         }
     }

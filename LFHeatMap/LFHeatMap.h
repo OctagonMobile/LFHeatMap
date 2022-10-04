@@ -30,7 +30,8 @@
 + (UIImage *)heatMapForMapView:(MKMapView *)mapView
                          boost:(float)boost
                      locations:(NSArray *)locations
-                       weights:(NSArray *)weights;
+                       weights:(NSArray *)weights
+                     colorList:(NSArray *)colors;
 
 /**
  Generates a heat map image for the specified rectangle.
@@ -50,7 +51,8 @@
 + (UIImage *)heatMapWithRect:(CGRect)rect 
                        boost:(float)boost 
                       points:(NSArray *)points 
-                     weights:(NSArray *)weights;
+                     weights:(NSArray *)weights
+                   colorList:(NSArray *)colors;
 
 /**
  Generates a heat map image for the specified rectangle.
@@ -74,7 +76,8 @@
                       points:(NSArray *)points 
                      weights:(NSArray *)weights 
     weightsAdjustmentEnabled:(BOOL)weightsAdjustmentEnabled
-             groupingEnabled:(BOOL)groupingEnabled;
+             groupingEnabled:(BOOL)groupingEnabled
+                   colorList:(NSArray *)colors;
 
 
 @end

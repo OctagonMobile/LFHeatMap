@@ -67,7 +67,7 @@ static NSString *const kMagnitude = @"magnitude";
 - (IBAction)sliderChanged:(UISlider *)slider
 {
     float boost = slider.value;
-    UIImage *heatmap = [LFHeatMap heatMapForMapView:self.mapView boost:boost locations:self.locations weights:self.weights];
+    UIImage *heatmap = [LFHeatMap heatMapForMapView:self.mapView boost:boost locations:self.locations weights:self.weights colorList: [NSArray array]];
     self.imageView.image = heatmap;
 }
 
