@@ -14,11 +14,11 @@
 		4EBFBA2F1979813800EB178F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBFBA2E1979813800EB178F /* main.m */; };
 		4EBFBA331979813800EB178F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBFBA321979813800EB178F /* AppDelegate.m */; };
 		4EBFBA351979813800EB178F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EBFBA341979813800EB178F /* Images.xcassets */; };
-		4EBFBA541979825400EB178F /* LFHeatMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBFBA531979825400EB178F /* LFHeatMap.m */; };
 		4EBFBA5919799DD900EB178F /* LFHeadMapDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBFBA5719799DD900EB178F /* LFHeadMapDemoViewController.m */; };
 		4EBFBA5B19799DD900EB178F /* LFHeadMapDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EBFBA5819799DD900EB178F /* LFHeadMapDemoViewController.xib */; };
 		4EBFBA5E19799E3C00EB178F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EBFBA5D19799E3C00EB178F /* MapKit.framework */; };
 		4EBFBA601979A2DC00EB178F /* quake.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4EBFBA5F1979A2DC00EB178F /* quake.plist */; };
+		51939C6D28F41AA60061CFA8 /* LFHeatMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 51939C6C28F41AA60061CFA8 /* LFHeatMap.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,12 +35,12 @@
 		4EBFBA341979813800EB178F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		4EBFBA3B1979813800EB178F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		4EBFBA521979825400EB178F /* LFHeatMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFHeatMap.h; sourceTree = "<group>"; };
-		4EBFBA531979825400EB178F /* LFHeatMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFHeatMap.m; sourceTree = "<group>"; };
 		4EBFBA5619799DD900EB178F /* LFHeadMapDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFHeadMapDemoViewController.h; sourceTree = "<group>"; };
 		4EBFBA5719799DD900EB178F /* LFHeadMapDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFHeadMapDemoViewController.m; sourceTree = "<group>"; };
 		4EBFBA5819799DD900EB178F /* LFHeadMapDemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LFHeadMapDemoViewController.xib; sourceTree = "<group>"; };
 		4EBFBA5D19799E3C00EB178F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		4EBFBA5F1979A2DC00EB178F /* quake.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = quake.plist; sourceTree = "<group>"; };
+		51939C6C28F41AA60061CFA8 /* LFHeatMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFHeatMap.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				4EBFBA521979825400EB178F /* LFHeatMap.h */,
-				4EBFBA531979825400EB178F /* LFHeatMap.m */,
+				51939C6C28F41AA60061CFA8 /* LFHeatMap.m */,
 			);
 			name = LFHeatMap;
 			path = ../LFHeatMap;
@@ -158,6 +158,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 4EBFBA161979813800EB178F;
@@ -189,8 +190,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51939C6D28F41AA60061CFA8 /* LFHeatMap.m in Sources */,
 				4EBFBA331979813800EB178F /* AppDelegate.m in Sources */,
-				4EBFBA541979825400EB178F /* LFHeatMap.m in Sources */,
 				4EBFBA5919799DD900EB178F /* LFHeadMapDemoViewController.m in Sources */,
 				4EBFBA2F1979813800EB178F /* main.m in Sources */,
 			);

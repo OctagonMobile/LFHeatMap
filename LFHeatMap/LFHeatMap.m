@@ -7,7 +7,6 @@
 
 #import "LFHeatMap.h"
 
-
 @implementation LFHeatMap
 
 inline static int isqrt(int x)
@@ -411,7 +410,6 @@ inline static int isqrt(int x)
                 indexOrigin = 4*i;
                 // Normalize density to 0..1
                 floatDensity = (float)density[i] / (float)maxDensity;
-                
                 if (colors.count > 0) {
                     
                     if (colors.count == 1) {
@@ -439,58 +437,40 @@ inline static int isqrt(int x)
                         long counter = (colors.count - 1);
                         while (counter >= 0) {
                             if (floatDensity >= counter * eachRange) {
-                                
-                                UIColor * color = colors[counter];
+                                float upper = (counter + 1) * eachRange;
+                                float lower = counter * eachRange;
+                              
+                                UIColor * color = counter == 0 ? colors[counter] :
+                                [self getDynamicColorfor:floatDensity
+                                                  oldMin: lower
+                                                  oldMax: upper
+                                                  from: [self getAdjustedColor:colors[counter-1] rangeFloatDensity:lower]
+                                                  to: [self getAdjustedColor:colors[counter] rangeFloatDensity:upper]];
                                 
                                 CGFloat red, green, blue, alpha;
                                 [color getRed: &red
                                         green: &green
                                          blue: &blue
                                         alpha: &alpha];
+                                
+                                if (counter == 0) {
+                                    rgba[indexOrigin+3] = floatDensity * 255;
 
-                                rgba[indexOrigin+3] = floatDensity * 255;
+                                    // Red component
+                                    rgba[indexOrigin] = red * floatDensity * 255;
 
-                                // Red and alpha component
-                                rgba[indexOrigin] = floatDensity * 255;
-                                rgba[indexOrigin+3] = rgba[indexOrigin];
+                                    // Green component
+                                    rgba[indexOrigin+1] = green * floatDensity * 255;
 
-                                 // Green component
-                                if (floatDensity >= 0.75)
-                                    rgba[indexOrigin+1] = rgba[indexOrigin];
-                                else if (floatDensity >= 0.5)
-                                    rgba[indexOrigin+1] = (floatDensity - 0.5) * 255 * 3;
-
-                                // Blue component
-                                if (floatDensity >= 0.8)
-                                    rgba[indexOrigin+2] = (floatDensity - 0.8) * 255 * 5;
-
-//                                float upper = (counter + 1) * eachRange;
-//                                float lower = counter * eachRange;
-
-//                                // Red component
-//                                float redRange = (0.5 * (upper - lower)) + lower;
-//                                if (floatDensity >= redRange)
-//                                    rgba[indexOrigin] = floatDensity * red * 255;
-//                                else
-//                                    rgba[indexOrigin] = (floatDensity * red + redRange) * 255;
-//
-//
-//                                // Green component
-//                                float greenRange = (0.5 * (upper - lower)) + lower;
-//                                if (floatDensity >= greenRange)
-//                                    rgba[indexOrigin+1] = floatDensity * green * 255;
-//                                else
-//                                    rgba[indexOrigin+1] = (floatDensity * green + greenRange) * 255 * 3;
-//
-//
-//                                // Blue component
-//                                float blueRange = (0.5 * (upper - lower)) + lower;
-//                                if (floatDensity >= blueRange)
-//                                    rgba[indexOrigin+2] = floatDensity * blue * 255;
-//                                else
-//                                    rgba[indexOrigin+2] = (floatDensity * blue + blueRange) * 255 * 5;
-
-
+                                    // Blue component
+                                    rgba[indexOrigin+2] = blue * floatDensity * 255;
+                                } else {
+                                    rgba[indexOrigin] = red * 255;
+                                    rgba[indexOrigin + 1] = green * 255;
+                                    rgba[indexOrigin + 2] = blue * 255;
+                                    rgba[indexOrigin + 3] = alpha * 255;
+                                }
+                                
                                 break;
                             }
                             counter -= 1;
@@ -543,6 +523,71 @@ inline static int isqrt(int x)
     free(rgba);
     
     return image;
+}
+
++ (UIColor *)getAdjustedColor:(UIColor *)fromColor rangeFloatDensity:(float)rangeFloatDensity {
+    CGFloat red, green, blue, alpha;
+    [fromColor getRed: &red
+            green: &green
+             blue: &blue
+            alpha: &alpha];
+
+    alpha = rangeFloatDensity;
+
+    red = red * rangeFloatDensity;
+
+    green = green * rangeFloatDensity;
+
+    blue = blue * rangeFloatDensity;
+    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
++ (UIColor *)getDynamicColorfor:(float)floatDensity
+                         oldMin:(float)oldMin
+                         oldMax:(float)oldMax
+                            from:(UIColor *)fromColor
+                             to:(UIColor *)toColor {
+    
+    float newMin = 0;
+    float newMax = 100;
+    
+    float oldRange = (oldMax - oldMin);
+    
+    if(oldRange <= 0) {
+        return [self toColorFrom:fromColor toColor:toColor percent:1];
+    }
+    
+    float newRange = (newMax - newMin);
+    float percent = (((floatDensity - oldMin) * newRange) / oldRange) + newMin;
+    return [self toColorFrom:fromColor toColor:toColor percent:percent];
+}
+
+
++ (UIColor *) toColorFrom:(UIColor *)fromColor toColor:(UIColor *)toColor percent:(float)percentage {
+    float percentageFraction = MAX(MIN(percentage, 100), 0) / 100;
+    if (percentageFraction == 0) {
+        return fromColor;
+    } else if (percentageFraction == 1) {
+        return toColor;
+    } else {
+        
+        CGFloat r1, g1, b1, a1;
+        [fromColor getRed: &r1
+                green: &g1
+                 blue: &b1
+                alpha: &a1];
+        
+        CGFloat r2, g2, b2, a2;
+        [toColor getRed: &r2
+                green: &g2
+                 blue: &b2
+                alpha: &a2];
+
+        return [UIColor colorWithRed: (r1 + (r2 - r1) * percentageFraction)
+                               green:(g1 + (g2 - g1) * percentageFraction)
+                                blue:(b1 + (b2 - b1) * percentageFraction)
+                               alpha:(a1 + (a2 - a1) * percentageFraction)];
+    }
 }
 
 @end
